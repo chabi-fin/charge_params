@@ -1,4 +1,6 @@
-NAME="PYF2"
+#!/bin/bash
+
+NAME=$1
 
 # Perform Energy Minimization
 gmxs grompp -f minim_steep.mdp -c initial.gro -p topol.top -o ${NAME}_em.tpr -maxwarn 1 -nobackup

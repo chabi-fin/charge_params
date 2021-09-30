@@ -1,3 +1,5 @@
+#!/bin/bash
+
 cp -r /home/finnl92/thesis/ff/amber14sb_sp.ff/ .
 cp amber14sb_sp.ff/residuetypes.dat .
 
