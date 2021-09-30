@@ -1,0 +1,20 @@
+Purpose: Obtain high quality partial atomic charge values for ligands in MD simulations.
+
+Overview: This method involves 2 iterations of a standard RESP fitting procedure. The first iteration uses the standard two stage RESP fitting procedure (https://doi.org/10.1021/ja00124a002, https://doi.org/10.1021/j100142a004) to get preliminary charges. These are assigned to respective atom types and used to run an MD simulation. Conformations from the simulation(s) are submitted to RESP fitting again in a second iteration, and the final atomic charge values are average RESP fitted values over multiple conformations. 
+
+Source: The procedure for a multiconformational fit for partial atomic charges is from: https://doi.org/10.1016/j.chempr.2017.09.012
+
+HOW TO STAGE 1
+
+1) Use the gui program Avogadro (https://avogadro.cc/) to obtain MM minimized starting structure(s) of the molecule and save as NAME_conformX.mol2 (replace NAME with an appropriate 3 letter code).
+2) >> ./initialize_stage1.sh [=NAME] [=Net charge] [=PATH] [=Confrom1 Conform2 ...]
+	e.g. >> ./initialize_stage1.sh FY1 -2 $(pwd)/FY1 alpha beta
+3) Reorder the atoms in NAME.pdb so that individual residues are grouped together according to C-terminal --> N-terminal if working with a peptide. 
+
+x) Enter the charges into the topol.top file or .rtp file of the force field.
+
+
+
+
+
+
