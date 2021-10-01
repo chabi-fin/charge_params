@@ -7,9 +7,11 @@ Source: The procedure for a multiconformational fit for partial atomic charges i
 HOW TO STAGE 1
 
 1) Use the gui program Avogadro (https://avogadro.cc/) to obtain MM minimized starting structure(s) of the molecule and save as NAME_conformX.mol2 (replace NAME with an appropriate 3 letter code).
-2) >> ./initialize_stage1.sh [=NAME] [=Net charge] [=PATH] [=Confrom1 Conform2 ...]
-	e.g. >> ./initialize_stage1.sh FY1 -2 $(pwd)/FY1 alpha beta
-3) Reorder the atoms in NAME.pdb so that individual residues are grouped together according to C-terminal --> N-terminal if working with a peptide. 
+2) The next step involves running acpype, which generates a topology using GAFF parameters. To download the tool or get more info https://pypi.org/project/acpype/; A useful tutorial can be found at https://github.com/alanwilter/acpype/blob/master/acpype_gmx_tutorial.md
+3) >> ./initialize_stage1.sh -n [=NAME] -c [=Net charge] -d [=PATH]
+	e.g. >> ./initialize_stage1.sh -n FY1 -c -2 -d $(pwd)/FY1 
+4) Reorder the atoms in NAME.pdb so that individual residues are grouped together according to C-terminal --> N-terminal if working with a peptide. Chose a consistent order with the .rtp file. 
+5) Prepare the files resp1.in resp2.in and resp.qin according to the AMBER tutorial https://ambermd.org/tutorials/advanced/tutorial1/section1.htm
 
 x) Enter the charges into the topol.top file or .rtp file of the force field.
 
