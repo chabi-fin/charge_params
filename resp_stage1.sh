@@ -4,14 +4,16 @@
 NAME="MOL"
 NETCHARGE=0
 DIR=$(pwd)
+HOME=$(pwd)
 
 # Parse the command line
-while getopts n:c:d:o: flag
+while getopts n:c:d:r: flag
 do
     case "${flag}" in
 	n) NAME=${OPTARG};;
 	c) NETCHARGE=${OPTARG};;
 	d) DIR=${OPTARG};;
+        r) RES=${OPTARG};;
     esac
 done 
 
@@ -41,7 +43,7 @@ gen_resp () {
     sed -i -e "s/\0   1/${NETCHARGE}  1/" geo.dat
     sed -i -e "s/\ 1   1/${NETCHARGE}  1/" geo.dat
     
-    ./run_job.sh rung16 geo.dat
+    #./run_job.sh rung16 geo.dat
 
     # Convert from Guassian electrostatic potential
     espgen -i geo.gesp -o geo.esp
@@ -74,7 +76,12 @@ for conform in ${folders[@]}; do
 
 done
 
-echo ""
-echo "Check the \"resp2.out\" file for each conformation to verify charges are reasonable."
+# In case the name and residue ID differ
+if [ -z "$RES" ]; then
+    RES=$NAME
+fi
+
+cd $HOME
+python ave_charges.py $NAME $DIR $RES
 
 exit 0

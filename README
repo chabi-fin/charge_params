@@ -8,13 +8,13 @@ HOW TO STAGE 1
 
 1) Use the gui program Avogadro (https://avogadro.cc/) to obtain MM minimized starting structure(s) of the molecule and save as NAME_conformX.mol2 (replace NAME with an appropriate 3 letter code).
 2) The next step involves running acpype, which generates a topology using GAFF parameters. To download the tool or get more info https://pypi.org/project/acpype/; A useful tutorial can be found at https://github.com/alanwilter/acpype/blob/master/acpype_gmx_tutorial.md
-3) >> ./initialize_stage1.sh -n [=NAME] -c [=Net charge] -d [=PATH]
+3) >> ./initialize_stage1.sh -n [=NAME] -c [=CHARGE] -d [=DIRECTORY]
 	e.g. >> ./initialize_stage1.sh -n FY1 -c -2 -d $(pwd)/FY1 
 4) Reorder the atoms in NAME.pdb so that individual residues are grouped together according to C-terminal --> N-terminal if working with a peptide. Chose a consistent order with the .rtp file. 
-5) Prepare the files resp1.in resp2.in and resp.qin according to the AMBER tutorial https://ambermd.org/tutorials/advanced/tutorial1/section1.htm
-
-x) Enter the charges into the topol.top file or .rtp file of the force field.
-
+5) Prepare the files resp1.in resp2.in and resp.qin according to the AMBER tutorial https://ambermd.org/tutorials/advanced/tutorial1/section1.htm and save to the main working dir.
+6) Get RESP fitted charges from ab initio methods and average the output over conformations
+	>> ./resp_stage1.sh -n [=NAME] -c [=CHARGE] -d [=DIRECTORY]
+7) Use 'rtp_output.txt' to prepare a modified forcefield to simulate the residue!
 
 
 
