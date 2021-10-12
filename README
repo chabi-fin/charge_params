@@ -1,4 +1,4 @@
-Purpose: Obtain high quality partial atomic charge values for ligands in MD simulations.
+Purpose: Obtain high quality partial atomic charge values for noncanonical amino acids in MD simulations.
 
 Overview: This method involves 2 iterations of a standard RESP fitting procedure. The first iteration uses the standard two stage RESP fitting procedure (https://doi.org/10.1021/ja00124a002, https://doi.org/10.1021/j100142a004) to get preliminary charges. These are assigned to respective atom types and used to run an MD simulation. Conformations from the simulation(s) are submitted to RESP fitting again in a second iteration, and the final atomic charge values are average RESP fitted values over multiple conformations. 
 
@@ -9,14 +9,16 @@ HOW TO STAGE 1
 1) Use the gui program Avogadro (https://avogadro.cc/) to obtain MM minimized starting structure(s) of the molecule and save as NAME_conformX.mol2 (replace NAME with an appropriate 3 letter code).
 2) The next step involves running acpype, which generates a topology using GAFF parameters. To download the tool or get more info https://pypi.org/project/acpype/; A useful tutorial can be found at https://github.com/alanwilter/acpype/blob/master/acpype_gmx_tutorial.md
 3) >> ./initialize_stage1.sh -n [=NAME] -c [=CHARGE] -d [=DIRECTORY]
-	e.g. >> ./initialize_stage1.sh -n FY1 -c -2 -d $(pwd)/FY1 
+	>> ./initialize_stage1.sh -n FY1 -c -2 -d $(pwd)/FY1 
 4) Reorder the atoms in NAME.pdb so that individual residues are grouped together according to C-terminal --> N-terminal if working with a peptide. Chose a consistent order with the .rtp file. 
 5) Prepare the files resp1.in resp2.in and resp.qin according to the AMBER tutorial https://ambermd.org/tutorials/advanced/tutorial1/section1.htm and save to the main working dir.
 6) Get RESP fitted charges from ab initio methods and average the output over conformations
-	>> ./resp_stage1.sh -n [=NAME] -c [=CHARGE] -d [=DIRECTORY]
-7) Use 'rtp_output.txt' to prepare a modified forcefield to simulate the residue!
+	>> ./resp_stage1.sh -n [=NAME] -c [=CHARGE] -d [=DIRECTORY] -r [=RESIDUE_ID]
+7) Use 'rtp_output.txt' along with the acpype output to prepare a modified forcefield to simulate the residue. See https://manual.gromacs.org/current/how-to/topology.html
 
+HOW TO STAGE 2
 
-
-
+1) Set up an initial topology for stage 2
+ 	>> ./initialize_stage2.sh -n [=NAME] -c [=CHARGE] -d [=WORKING_DIR] -ff [=DIRECTORY_FOR_FF]
+	e.g. >> ./initialize_stage2.sh -n FY1 -c -2 -d $(pwd)/FY1 -ff /home/finnl92/thesis/ff/amber14sb_sp.ff
 
