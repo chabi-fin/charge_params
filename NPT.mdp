@@ -1,4 +1,5 @@
 ; Run parameters
+define			= -DPOSRES	; position restrain the protein
 integrator		= md		; leap-frog integrator
 nsteps			= 200000	; 2 * 200000 = 400 ps
 dt			= 0.002		; 2 fs
