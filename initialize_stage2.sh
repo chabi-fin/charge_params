@@ -20,6 +20,7 @@ done
 # If name.mol2 not in directrory, exit
 usage() { echo "Usage: ./initialize_stage2.sh -n NAME -c CHARGE -d WORKING_DIR -ff PATH_TO_FORCE_FIELD"; exit 1;}
 
+# Set up directrories
 MDP=$(pwd)
 cd $DIR
 DIR=$(pwd)
@@ -31,22 +32,35 @@ if [ -z ${stage1_dirs[0]}/${NAME}.pdb ]; then
     usage
 fi
 
-mkdir -p stage2
-cp "${stage1_dirs[0]}/${NAME}.pdb" stage2
-cd stage2
-cp -r $FF $FF/residuetypes.dat .
+# Multiple primary conformations
+for stage1_dir in ${stage1_dirs[@]}; do
 
-# Generate topology using .pdb of capped residue
-gmx18 pdb2gmx -ff amber14sb_sp -f ${NAME}.pdb -o ${NAME}.gro -water tip3p -ignh -nobackup
+    # Use the conformational .pdb in stages 1 to initialize the simulation
+    stage2_dir=$(basename $stage1_dir)
+    stage2_dir=stage2_${stage2_dir/stage1_/}
+    echo "Stage2dir is $stage2_dir"
+    mkdir -p $stage2_dir
+    cp "${stage1_dir}/${NAME}.pdb" $stage2_dir
+    cd $stage2_dir
+    cp -r $FF $FF/residuetypes.dat .
 
-# Define box with ligand at center, >1.2 nm to edge
-gmx18 editconf -f ${NAME}.gro -o ${NAME}_box.gro -c -d 1.2 -bt cubic -nobackup
+    # Generate topology using .pdb of capped residue
+    gmx194 pdb2gmx -ff amber14sb_sp -f ${NAME}.pdb -o ${NAME}.gro -water tip3p -ignh -nobackup
 
-# Solvate Ligand with TIP3P
-gmx18 solvate -cp ${NAME}_box.gro -cs spc216 -o ${NAME}_solv.gro -p topol.top -nobackup
+    # Define box with ligand at center, >1.2 nm to edge
+    gmx194 editconf -f ${NAME}.gro -o ${NAME}_box.gro -c -d 1.2 -bt cubic -nobackup
 
-# Add Ions
-gmx18 grompp -f ${MDP}/minim_steep.mdp -c ${NAME}_solv.gro -p topol.top -o ions.tpr -maxwarn 1 -nobackup
-gmx18 genion -s ions.tpr -o ${NAME}_solv_ions.gro -p topol.top -np $NETCHARGE -pname NA -pq 1 -nobackup
+    # Solvate Ligand with TIP3P
+    gmx194 solvate -cp ${NAME}_box.gro -cs spc216 -o ${NAME}_solv.gro -p topol.top -nobackup
 
-cd $DIR
+    # Add Ions
+    if [ $NETCHARGE != "0" ]; then
+      gmx194 grompp -f ${MDP}/minim_steep.mdp -c ${NAME}_solv.gro -p topol.top -o ions.tpr -maxwarn 1 -nobackup
+      echo "SOL" | gmx194 genion -s ions.tpr -o ${NAME}_initial.gro -p topol.top -np $NETCHARGE -pname NA -pq 1 -nobackup
+    else
+      cp ${NAME}_solv.gro ${NAME}_initial.gro
+    fi
+
+    cd $DIR
+
+done
