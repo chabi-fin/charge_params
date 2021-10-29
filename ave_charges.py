@@ -274,7 +274,7 @@ def make_plot(name, res_id, analogue_res):
     ax3 = fig.add_subplot(gs[1:, :])
 
     #ax2 = plt.axes()
-    ax3.scatter(names, charges, label=name, marker='o', linewidth=3, \
+    ax3.scatter(names, charges, label=res_id, marker='o', linewidth=3, \
                 color="royalblue")
     ax3.scatter(analogue_names, analogue_charges, label=analogue_res, \
                 marker='*', linewidth=3, color="firebrick")
@@ -288,7 +288,7 @@ def make_plot(name, res_id, analogue_res):
     plt.legend(loc=2, fontsize=16)
     ax1.imshow(im)
     ax2.imshow(analogue_im)
-    ax1.text(0,0,name, verticalalignment="bottom", fontdict=font, \
+    ax1.text(0,0,res_id, verticalalignment="bottom", fontdict=font, \
                 color="royalblue")
     ax2.text(0,0,analogue_res, verticalalignment="bottom", fontdict=font, \
         color="firebrick")
@@ -300,7 +300,7 @@ def make_plot(name, res_id, analogue_res):
         ax3.spines[i].set_linewidth(2)
 
     # Save to file
-    plt.savefig(name + "_charges.png")
+    plt.savefig(res_id + "_charges.png")
     plt.show()
 
     return None
